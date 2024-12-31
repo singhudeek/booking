@@ -120,6 +120,7 @@
     <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+      let attention = Prompt();
       (() => {
       'use strict'
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -146,7 +147,11 @@
       // }
 
       //notify("this is my message", "warning")
-      notifyModel('Error!', '<em>Hello World</em>', 'error', 'Cool')
+      //notifyModel('Error!', '<em>Hello World</em>', 'error', 'Cool')
+
+      //attention.toast({msg: "hello World", icon: "error"});
+      //attention.success({msg: "hello World"});
+      attention.error({msg: "hello World"});
     })   
 
     function notify(msg, msgType){
@@ -163,6 +168,67 @@
           icon: icon,
           confirmButtonText: confirmButtonText
         })
+      }
+
+      function Prompt() {
+        let toast = function(c){
+          const {
+            msg = "",
+            icon = "success",
+            position = "top-end",
+
+          } = c;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: position,
+            title : msg,
+            icon: icon,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({});
+        }
+
+        let success = function(c){
+          const {
+            msg= "",
+            title= "",
+            footer="",
+
+          } = c;
+          Swal.fire({
+            icon: "success",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
+        }
+
+        let error = function(c){
+          const {
+            msg= "",
+            title= "",
+            footer="",
+
+          } = c;
+          Swal.fire({
+            icon: "error",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
+        }
+        
+        return {
+          toast : toast,
+          success: success,
+          error: error
+        }
       }
       </script>
     </body>
