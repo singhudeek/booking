@@ -9,3 +9,4 @@ this is the repository for my booking and reservation project
 
 # some required javascript plugin
 - [noite](https://github.com/jaredreich/notie) 
+- [sweetAlert](https://sweetalert2.github.io/) for message/model box
