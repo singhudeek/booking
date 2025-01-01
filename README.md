@@ -8,6 +8,10 @@ this is the repository for my booking and reservation project
 - uses [nosurf](github.com/justians.nosurf)
 - uses [govalidator](https://github.com/asaskevich/govalidator) package for email server side validation
 
+
 # some required javascript plugin
 - [noite](https://github.com/jaredreich/notie) 
 - [sweetAlert](https://sweetalert2.github.io/) for message/model box
+
+# reference
+- some alternate template engine [jet](https://github.com/CloudyKit/jet)
