@@ -6,9 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/singhudeek/booking/pkg/config"
-	"github.com/singhudeek/booking/pkg/models"
-	"github.com/singhudeek/booking/pkg/renders"
+	"github.com/singhudeek/booking/internal/config"
+	"github.com/singhudeek/booking/internal/forms"
+	"github.com/singhudeek/booking/internal/models"
+	"github.com/singhudeek/booking/internal/renders"
 )
 
 type Repository struct {
@@ -52,7 +53,15 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // render the Reservation page
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	renders.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+
+	var emptyReservation models.Reservation
+
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+	renders.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
 }
 
 // render the fenerals page
@@ -102,4 +111,37 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 // render the Contact page
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	renders.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+// PostReservation handles the posting of a reservation
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	form := forms.New(r.PostForm)
+	//form.Has("first_name", r)
+	form.Required("first_name", "last_name", "email", "phone")
+	form.MinLength("first_name", 3, r)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		renders.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+	}
+
+	return
 }
